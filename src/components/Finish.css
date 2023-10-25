@@ -1,0 +1,17 @@
+.finish {
+    border: 5px solid magenta;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+}
+
+.finish:after {
+    border: 5px solid magenta;
+    border-radius: 50%;
+    height: 24px;
+    width: 24px;
+    content: '';
+    display: block;
+    margin-top: 3px;
+    margin-left: 3px;
+}

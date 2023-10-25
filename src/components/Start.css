@@ -1,0 +1,30 @@
+.start>div {
+   position: relative;
+}
+
+.start>.left {
+   border-left: 5px solid magenta;
+   border-top: 5px solid transparent;
+   border-bottom: 5px solid transparent;
+   height: 40px;
+}
+
+.start>.top {
+   border-top: 5px solid magenta;
+   border-left: 5px solid transparent;
+   border-right: 5px solid transparent;
+   width: 40px;
+   transform: rotate(30deg);
+   top: -38px;
+   left: -4px;
+}
+
+.start>.bottom {
+   border-bottom: 5px solid magenta;
+   border-left: 5px solid transparent;
+   border-right: 5px solid transparent;
+   width: 40px;
+   transform: rotate(-30deg);
+   top: -22px;
+   left: -4px;
+}
