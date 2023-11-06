@@ -12,10 +12,11 @@ type Props = {
     image: string,
     updateActiveItem: (item: CourseSymbol | undefined) => void,
     controlItems: ControlItem[],
-    setControlItems: (controlItems: ControlItem[]) => void
+    setControlItems: (controlItems: ControlItem[]) => void,
+    solve: () => void
 }
 
-function SettingsPanel({ updateImage, image, updateActiveItem, controlItems, setControlItems }: Props) {
+function SettingsPanel({ updateImage, image, updateActiveItem, controlItems, setControlItems, solve }: Props) {
     const [mapName, setMapName] = useState('');
     const [activeCourseItem, setActiveCourseItem] = useState<CourseSymbol | undefined>(undefined);
 
@@ -191,6 +192,7 @@ function SettingsPanel({ updateImage, image, updateActiveItem, controlItems, set
                     <Button
                         variant="contained"
                         component="label"
+                        onClick={() => solve()}
                     >
                         Calculate
                     </Button>
@@ -208,6 +210,7 @@ function SettingsPanel({ updateImage, image, updateActiveItem, controlItems, set
                 <Button
                     variant="contained"
                     component="label"
+
                 >
                     Solution
                 </Button>

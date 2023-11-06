@@ -2,14 +2,22 @@ import './App.css'
 import SettingsPanel from "./components/SettingsPanel.tsx";
 import MapPanel from "./components/MapPanel.tsx";
 import {Container, Grid} from "@mui/material";
-import {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {CourseSymbol} from "./enums/CourseItems.enum.ts";
 import {ControlItem} from "./types/ControlItem.type.ts";
+import Calculator from "./models/calculator.model.tsx";
 
 function App() {
     const [img, setImg] = useState('');
     const [activeItem, setActiveItem] = useState<CourseSymbol | undefined>(undefined);
     const [controlItems, setControlItems] = useState<ControlItem[]>([]);
+    const [solution, setSolution] = useState<ControlItem[]>([]);
+
+    useEffect(() => {
+        if(controlItems.length === 0) {
+            setSolution([]);
+        }
+    }, [controlItems]);
 
     const handleImageUpdate = (img: string) => {
         // do cleanup
@@ -20,6 +28,12 @@ function App() {
         setActiveItem(item);
     }
 
+    const solve = () => {
+        //;
+
+        const data = new Calculator(controlItems);
+        setSolution(data.getPath())
+    }
 
     return (
         <>
@@ -37,16 +51,17 @@ function App() {
                     flex: '0 0 400px',
                     borderRight: '1px solid grey',
                 }}>
-                    <SettingsPanel updateImage={handleImageUpdate} image={img} updateActiveItem={updateActiveItem} controlItems={controlItems} setControlItems={setControlItems}></SettingsPanel>
+                    <SettingsPanel updateImage={handleImageUpdate} image={img} updateActiveItem={updateActiveItem} controlItems={controlItems} setControlItems={setControlItems} solve={solve}></SettingsPanel>
                 </Container>
-                <Container sx={{
+                <Container maxWidth={false} sx={{
                     m: 0,
-                    overflow: 'auto'
+                    p: 0,
+                    overflow: 'scroll',
+                    position: 'relative'
                 }}>
-                    <MapPanel image={img} activeItem={activeItem} controlItems={controlItems} setControlItems={setControlItems}></MapPanel>
+                    <MapPanel image={img} activeItem={activeItem} controlItems={controlItems} setControlItems={setControlItems} path={solution}></MapPanel>
                 </Container>
             </Container>
-
         </Grid>
     </>
   )

@@ -1,112 +1,65 @@
 import './MapPanel.css'
-import {Box, Container} from "@mui/material";
+import {Box, Container, Fab} from "@mui/material";
 import {CourseSymbol} from "../enums/CourseItems.enum.ts";
-import React, {useEffect, useState} from "react";
-import Control from "./Control.tsx";
-import Finish from "./Finish.tsx";
-import Start from "./Start.tsx";
+import React from "react";
 import {ControlItem} from "../types/ControlItem.type.ts";
+import MapContainer from "./MapContainer.tsx";
+import {TransformComponent, TransformWrapper} from "react-zoom-pan-pinch";
+import ZoomControls from "./ZoomControls.tsx";
+import Canvas from "./Canvas.tsx";
 
 type Props = {
     image: string,
     activeItem: CourseSymbol | undefined,
     setControlItems: (items: ControlItem[]) => void,
-    controlItems: ControlItem[]
+    controlItems: ControlItem[],
+    path: ControlItem[]
 }
 
-function MapPanel({ image, activeItem, controlItems, setControlItems }: Props) {
-    const [children, setChildren] = useState<React.ReactElement[]>([]);
-
-    const removeItem = (e: MouseEvent, key: number) => {
-        e.stopPropagation();
-        setControlItems(controlItems.filter((child) => child.id !== key))
-    };
-
-    useEffect(() => {
-        const items = controlItems.map(({ x, y, id, type}) => createItem(x, y, id, type));
-        setChildren(items);
-        console.log(controlItems)
-
-    }, [controlItems]);
-
-    const createItem = (x: number, y: number, key: number, type: CourseSymbol): React.ReactElement => {
-        let item, left, top;
-        if (type === CourseSymbol.Start) {
-            left = x-18;
-            top = y-26;
-            item = <Start/>
-        }
-
-        if (type === CourseSymbol.Finish) {
-            left = x-27;
-            top = y-27;
-            item =  <Finish/>
-        }
-
-        if (type === CourseSymbol.Control) {
-            left = x-27;
-            top = y-27;
-            item =  <Control/>
-        }
-
-        return (
-            <Box sx={{
-                position: 'absolute',
-                top: top,
-                left: left
-            }} onClick={(e) => removeItem(e, key)}
-                 key={key}>{item}</Box>
-        )
-    }
-
-    const handleClick = (e: any) => {
-        if (!activeItem) return;
-
-        const x = e.nativeEvent.layerX;
-        const y = e.nativeEvent.layerY;
-
-        const controlItem = {
-            x,
-            y,
-            id: new Date().valueOf(),
-            type: activeItem
-        }
-
-        setControlItems([...controlItems, controlItem]);
-    }
+function MapPanel({ image, activeItem, controlItems, setControlItems, path }: Props) {
 
     return <>
         {image ?
-        <Container sx={{
-            maxWidth: '100%',
-            maxHeight: '100vh',
-            position: 'relative'
-        }}>
-           <Box sx={{
-               display: 'inline-block'
-           }} onClick={(e) => handleClick(e)}>
-               {children}
-               <Box
-                   component="img"
-                   src={ image }
-               />
-           </Box>
+            <Container sx={{
+                maxWidth: '100%',
+                maxHeight: '100vh',
+                p: 0,
+            }}>
+                <TransformWrapper
+                    wheel={{ disabled: true }}
+                    doubleClick={{ disabled: true }}
+                    pinch={{ disabled: true }} panning={{ disabled: true }} minScale={.1} centerZoomedOut={true} initialScale={.6}>
+                    <ZoomControls/>
+                    <TransformComponent>
+                        {path && !!path.length && <Box sx={{
+                            position: 'absolute',
+                            height: 'auto',
+                            width: 'auto'
 
-        </Container>
+                        }}>
+                            <Canvas course={path} />
+                        </Box> }
+                        <MapContainer image={image} activeItem={activeItem} controlItems={controlItems} setControlItems={setControlItems}/>
+                    </TransformComponent>
+                </TransformWrapper>
+
+            </Container>
         :
+           <>
             <Box sx={{
                 display: 'flex',
                 height: '100%',
                 alignItems: 'center',
                 justifyContent: 'center'
             }}>
+
                 <Box sx={{
                     marginLeft: '50%',
                     width: '100%'
                 }}>
                     <h4>Select map first</h4>
                 </Box>
-            </Box>
+            </Box></>
         }
     </>
 }

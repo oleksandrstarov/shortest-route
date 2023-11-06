@@ -18,4 +18,12 @@ body {
   color: black;
 }
 
+#canvas {
+  width: 6000px;
+  height: 6000px;
+  display: block;
+}
 
+.label-control {
+  position: absolute;
+}
