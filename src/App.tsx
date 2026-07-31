@@ -2,7 +2,7 @@ import './App.css'
 import SettingsPanel from "./components/SettingsPanel.tsx";
 import MapPanel from "./components/MapPanel.tsx";
 import {Container, Grid} from "@mui/material";
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {CourseSymbol} from "./enums/CourseItems.enum.ts";
 import {ControlItem} from "./types/ControlItem.type.ts";
 import Calculator from "./models/calculator.model.tsx";

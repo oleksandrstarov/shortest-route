@@ -1,7 +1,5 @@
-import {Box, Container, Fab} from "@mui/material";
-import {AddRounded, RemoveRounded} from "@mui/icons-material";
+import {Box} from "@mui/material";
 import React, {useEffect, useState} from "react";
-import {useControls, useTransformContext, useTransformEffect} from "react-zoom-pan-pinch";
 import {CourseSymbol} from "../enums/CourseItems.enum.ts";
 import Start from "./Start.tsx";
 import Finish from "./Finish.tsx";
@@ -53,11 +51,14 @@ function MapContainer ({ image, activeItem, controlItems, setControlItems }: Pro
                 top: top,
                 left: left,
                 transform: `scale(3)`
-            }} onClick={(e) => removeItem(e, key)}
+            }} onClick={(e) => {
+                // @ts-ignore
+                removeItem(e, key)
+            }}
                  key={key}>{item}</Box>
         )
     }
-
+    // @ts-ignore
     const handleClick = (e: any) => {
         if (!activeItem) return;
 

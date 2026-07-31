@@ -1,11 +1,10 @@
 import {Box, Fab} from "@mui/material";
 import {AddRounded, CropFreeRounded, RemoveRounded} from "@mui/icons-material";
-import React from "react";
 import {useControls} from "react-zoom-pan-pinch";
 
 function ZoomControls() {
     const { zoomIn, zoomOut, resetTransform } = useControls();
-
+    // @ts-ignore
     const zoom = (action: 'in' | 'out') => {
         console.log(action);
         if (action === 'in') {

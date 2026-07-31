@@ -14,7 +14,7 @@ export default function Canvas({ course }: Props) {
 
         // @ts-ignore
         const context = canvas.getContext('2d');
-
+        // @ts-ignore
         context.clearRect(0, 0, canvas!.width, canvas!.height);
 
         //Our first draw

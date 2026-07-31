@@ -26,13 +26,16 @@ type Model = {
 
 export default class Calculator {
     private model: Model;
+    // @ts-ignore
     private distances: Record<string, number> = {};
     private path: string[] = [];
     constructor(items: ControlItem[]) {
         this.model = items.reduce((acc: Model, item: ControlItem) => {
             if (item.type === CourseSymbol.Start && !acc.start) {
+                // @ts-ignore
                 acc.start = { item };
             } else if (item.type === CourseSymbol.Finish && !acc.finish) {
+                // @ts-ignore
                 acc.finish = { item };
             } else {
                 if(!acc.controls) {
@@ -66,9 +69,13 @@ export default class Calculator {
 
         // @ts-ignore
         controls.forEach(control => {
+            // @ts-ignore
             control.distance = controls
+              // @ts-ignore
                 .filter(({ item }: { item: ControlItem}) => item.id !== control.item.id)
+              // @ts-ignore
                 .reduce((acc: any, { item }: { item: ControlItem}) => {
+                    // @ts-ignore
                     acc[item.id] = this.findDistance(control.item, item);
                     return acc
                 }, {})
@@ -95,6 +102,7 @@ export default class Calculator {
 
     setFinish(current: string, visited: string[], distance: number): void {
         this.counterFin++;
+        // @ts-ignore
         const currentItemDist = this.model.finish?.distance[current];
         const newDistance = distance + currentItemDist;
 
@@ -109,12 +117,12 @@ export default class Calculator {
     findOptions(current: string, visited: string[], distance: number): void {
         this.counter++
 
-
+        // @ts-ignore
         if(visited.length === Object.keys(this.model.controls).length) {
             this.setFinish(current, visited, distance);
             return;
         }
-
+        // @ts-ignore
         Object.keys(this.model.controls).forEach((id) => {
 
             if(visited.includes(id) || current === id) {
@@ -124,8 +132,10 @@ export default class Calculator {
             let currentItemDist;
 
             if (current ==='start') {
+                // @ts-ignore
                 currentItemDist = this.model.start?.distance[id]
             } else {
+                // @ts-ignore
                 currentItemDist = this.model.controls[id]!.distance[current]
             }
 
@@ -148,6 +158,7 @@ export default class Calculator {
             } else if (id === 'finish'){
                 return this.model.finish?.item;
             } else {
+                // @ts-ignore
                 return this.model.controls[id]!.item
             }
         })

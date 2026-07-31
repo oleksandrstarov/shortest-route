@@ -1,7 +1,6 @@
 import './MapPanel.css'
-import {Box, Container, Fab} from "@mui/material";
+import {Box, Container} from "@mui/material";
 import {CourseSymbol} from "../enums/CourseItems.enum.ts";
-import React from "react";
 import {ControlItem} from "../types/ControlItem.type.ts";
 import MapContainer from "./MapContainer.tsx";
 import {TransformComponent, TransformWrapper} from "react-zoom-pan-pinch";
