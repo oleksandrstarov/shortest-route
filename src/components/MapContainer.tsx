@@ -1,92 +1,63 @@
-import {Box} from "@mui/material";
-import React, {useEffect, useState} from "react";
-import {CourseSymbol} from "../enums/CourseItems.enum.ts";
+import { Box } from "@mui/material";
+import { MouseEvent, SyntheticEvent, useState } from "react";
+import { CourseSymbol } from "../enums/CourseItems.enum.ts";
 import Start from "./Start.tsx";
 import Finish from "./Finish.tsx";
 import Control from "./Control.tsx";
-import {ControlItem} from "../types/ControlItem.type.ts";
+import { ControlItem } from "../types/ControlItem.type.ts";
+import Canvas from "./Canvas.tsx";
 
 type Props = {
-    image: string,
-    activeItem: CourseSymbol | undefined,
-    setControlItems: (items: ControlItem[]) => void,
-    controlItems: ControlItem[]
+    image: string;
+    activeItem: CourseSymbol | undefined;
+    setControlItems: (items: ControlItem[]) => void;
+    controlItems: ControlItem[];
+    path: ControlItem[];
 }
-function MapContainer ({ image, activeItem, controlItems, setControlItems }: Props) {
-    const [children, setChildren] = useState<React.ReactElement[]>([]);
-    const removeItem = (e: MouseEvent, key: number) => {
-        e.stopPropagation();
-        setControlItems(controlItems.filter((child) => child.id !== key))
+
+function MapContainer({ image, activeItem, controlItems, setControlItems, path }: Props) {
+    const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+
+    const removeItem = (event: MouseEvent, id: string) => {
+        event.stopPropagation();
+        setControlItems(controlItems.filter((item) => item.id !== id));
     };
 
-    useEffect(() => {
-        const items = controlItems.map(({ x, y, id, type}) => createItem(x, y, id, type));
-        setChildren(items);
-    }, [controlItems]);
+    const handleClick = (event: MouseEvent<HTMLDivElement>) => {
+        if (!activeItem || imageSize.width === 0) return;
+        const bounds = event.currentTarget.getBoundingClientRect();
+        const x = (event.clientX - bounds.left) * imageSize.width / bounds.width;
+        const y = (event.clientY - bounds.top) * imageSize.height / bounds.height;
 
-    const createItem = (x: number, y: number, key: number, type: CourseSymbol): React.ReactElement => {
-        let item, left, top;
-        const label = key.toString().substring(key.toString().length-5);
-        if (type === CourseSymbol.Start) {
-            left = x;
-            top = y-22;
-            item = <><Start/> <div className='label-control'>{label}</div></>
-        }
+        if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+        setControlItems([...controlItems, { x, y, id: crypto.randomUUID(), type: activeItem }]);
+    };
 
-        if (type === CourseSymbol.Finish) {
-            left = x-27;
-            top = y-27;
-            item =  <><Finish/><div  className='label-control'>{label}</div></>
-        }
-
-        if (type === CourseSymbol.Control) {
-            left = x-27;
-            top = y-27;
-            item = <> <Control/><div  className='label-control'>{label}</div></>
-        }
+    const createItem = ({ x, y, id, type }: ControlItem) => {
+        const label = id.slice(-5);
+        const offset = type === CourseSymbol.Start ? { left: x, top: y - 22 } : { left: x - 27, top: y - 27 };
+        const symbol = type === CourseSymbol.Start ? <Start /> : type === CourseSymbol.Finish ? <Finish /> : <Control />;
 
         return (
-            <Box sx={{
-                position: 'absolute',
-                top: top,
-                left: left,
-                transform: `scale(3)`
-            }} onClick={(e) => {
-                // @ts-ignore
-                removeItem(e, key)
-            }}
-                 key={key}>{item}</Box>
-        )
-    }
-    // @ts-ignore
-    const handleClick = (e: any) => {
-        if (!activeItem) return;
-
-        const x = e.nativeEvent.offsetX;
-        const y = e.nativeEvent.offsetY;
-
-        const controlItem = {
-            x,
-            y,
-            id: new Date().valueOf(),
-            type: activeItem
-        }
-
-        setControlItems([...controlItems, controlItem]);
-    }
+            <Box key={id} sx={{ position: 'absolute', ...offset, transform: 'scale(3)', zIndex: 2 }} onClick={(event) => removeItem(event, id)}>
+                {symbol}<div className="label-control">{label}</div>
+            </Box>
+        );
+    };
 
     return (
-        <Box sx={{
-            display: 'inline-block',
-            p: 0
-        }} onClick={(e) => handleClick(e)}>
-            {children}
+        <Box sx={{ display: 'inline-block', p: 0, position: 'relative' }} onClick={handleClick}>
             <Box
                 component="img"
-                src={ image }
+                src={image}
+                onLoad={(event: SyntheticEvent<HTMLImageElement>) => {
+                    setImageSize({ width: event.currentTarget.naturalWidth, height: event.currentTarget.naturalHeight });
+                }}
             />
+            {path.length > 0 && imageSize.width > 0 && <Canvas course={path} width={imageSize.width} height={imageSize.height} />}
+            {controlItems.map(createItem)}
         </Box>
-    )
+    );
 }
 
 export default MapContainer;

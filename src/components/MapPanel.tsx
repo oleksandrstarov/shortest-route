@@ -5,7 +5,6 @@ import {ControlItem} from "../types/ControlItem.type.ts";
 import MapContainer from "./MapContainer.tsx";
 import {TransformComponent, TransformWrapper} from "react-zoom-pan-pinch";
 import ZoomControls from "./ZoomControls.tsx";
-import Canvas from "./Canvas.tsx";
 
 type Props = {
     image: string,
@@ -30,15 +29,7 @@ function MapPanel({ image, activeItem, controlItems, setControlItems, path }: Pr
                     pinch={{ disabled: true }} panning={{ disabled: true }} minScale={.1} centerZoomedOut={true} initialScale={.6}>
                     <ZoomControls/>
                     <TransformComponent>
-                        {path && !!path.length && <Box sx={{
-                            position: 'absolute',
-                            height: 'auto',
-                            width: 'auto'
-
-                        }}>
-                            <Canvas course={path} />
-                        </Box> }
-                        <MapContainer image={image} activeItem={activeItem} controlItems={controlItems} setControlItems={setControlItems}/>
+                        <MapContainer image={image} activeItem={activeItem} controlItems={controlItems} setControlItems={setControlItems} path={path}/>
                     </TransformComponent>
                 </TransformWrapper>
 

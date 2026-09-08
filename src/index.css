@@ -18,10 +18,10 @@ body {
   color: black;
 }
 
-#canvas {
-  width: 6000px;
-  height: 6000px;
-  display: block;
+.route-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
 .label-control {

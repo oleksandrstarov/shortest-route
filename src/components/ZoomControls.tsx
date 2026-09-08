@@ -4,17 +4,6 @@ import {useControls} from "react-zoom-pan-pinch";
 
 function ZoomControls() {
     const { zoomIn, zoomOut, resetTransform } = useControls();
-    // @ts-ignore
-    const zoom = (action: 'in' | 'out') => {
-        console.log(action);
-        if (action === 'in') {
-            zoomIn();
-        }
-
-        if (action === 'out') {
-            zoomOut();
-        }
-    }
 
     return <Box sx={{
         position: 'fixed',

@@ -2,7 +2,7 @@ import './App.css'
 import SettingsPanel from "./components/SettingsPanel.tsx";
 import MapPanel from "./components/MapPanel.tsx";
 import {Container, Grid} from "@mui/material";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {CourseSymbol} from "./enums/CourseItems.enum.ts";
 import {ControlItem} from "./types/ControlItem.type.ts";
 import Calculator from "./models/calculator.model.tsx";
@@ -12,6 +12,7 @@ function App() {
     const [activeItem, setActiveItem] = useState<CourseSymbol | undefined>(undefined);
     const [controlItems, setControlItems] = useState<ControlItem[]>([]);
     const [solution, setSolution] = useState<ControlItem[]>([]);
+    const [message, setMessage] = useState('');
 
     useEffect(() => {
         if(controlItems.length === 0) {
@@ -19,20 +20,24 @@ function App() {
         }
     }, [controlItems]);
 
-    const handleImageUpdate = (img: string) => {
-        // do cleanup
+    const handleImageUpdate = useCallback((img: string) => {
         setImg(img);
-    }
+        setMessage('');
+    }, []);
 
-    const updateActiveItem = (item: CourseSymbol | undefined) => {
+    const updateActiveItem = useCallback((item: CourseSymbol | undefined) => {
         setActiveItem(item);
-    }
+    }, []);
 
     const solve = () => {
-        //;
-
-        const data = new Calculator(controlItems);
-        setSolution(data.getPath())
+        try {
+            const calculator = new Calculator(controlItems);
+            setSolution(calculator.getPath());
+            setMessage(`Shortest route: ${calculator.getDistance().toFixed(1)} px`);
+        } catch (error) {
+            setSolution([]);
+            setMessage(error instanceof Error ? error.message : 'Unable to calculate the route.');
+        }
     }
 
     return (
@@ -51,7 +56,7 @@ function App() {
                     flex: '0 0 400px',
                     borderRight: '1px solid grey',
                 }}>
-                    <SettingsPanel updateImage={handleImageUpdate} image={img} updateActiveItem={updateActiveItem} controlItems={controlItems} setControlItems={setControlItems} solve={solve}></SettingsPanel>
+                    <SettingsPanel updateImage={handleImageUpdate} image={img} updateActiveItem={updateActiveItem} controlItems={controlItems} setControlItems={setControlItems} solve={solve} message={message} />
                 </Container>
                 <Container maxWidth={false} sx={{
                     m: 0,

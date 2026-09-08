@@ -1,25 +1,23 @@
-import {useEffect, useRef} from "react";
-import {ControlItem} from "../types/ControlItem.type.ts";
+import { useEffect, useRef } from "react";
+import { ControlItem } from "../types/ControlItem.type.ts";
 
 type Props = {
-    course: ControlItem[]
+    course: ControlItem[];
+    width: number;
+    height: number;
 }
 
-export default function Canvas({ course }: Props) {
-
-    const canvasRef = useRef(null)
+export default function Canvas({ course, width, height }: Props) {
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
     useEffect(() => {
         const canvas = canvasRef.current;
-
-        // @ts-ignore
+        if (!canvas) return;
         const context = canvas.getContext('2d');
-        // @ts-ignore
-        context.clearRect(0, 0, canvas!.width, canvas!.height);
-
-        //Our first draw
-        context.strokeStyle = '#ff00ff';
-        context.lineWidth = 6;
+        if (!context) return;
+        context.clearRect(0, 0, width, height);
+        context.strokeStyle = '#c000c0';
+        context.lineWidth = 4;
         context.beginPath();
 
         course.forEach((item, index) => {
@@ -31,9 +29,9 @@ export default function Canvas({ course }: Props) {
         })
 
         context.stroke();
-    }, [course]);
+    }, [course, width, height]);
 
 
 
-    return <canvas id='canvas' ref={canvasRef} width={6000} height={6000}></canvas>
+    return <canvas className="route-canvas" ref={canvasRef} width={width} height={height} aria-label="Calculated route" />
 }

@@ -1,5 +1,5 @@
 import './SettingsPanel.css'
-import {Box, Button, Paper} from "@mui/material";
+import {Alert, Box, Button, Paper} from "@mui/material";
 import {ChangeEvent, ChangeEventHandler, useEffect, useMemo, useState} from "react";
 import Start from "./Start.tsx";
 import Control from "./Control.tsx";
@@ -13,16 +13,17 @@ type Props = {
     updateActiveItem: (item: CourseSymbol | undefined) => void,
     controlItems: ControlItem[],
     setControlItems: (controlItems: ControlItem[]) => void,
-    solve: () => void
+    solve: () => void,
+    message: string
 }
 
-function SettingsPanel({ updateImage, image, updateActiveItem, controlItems, setControlItems, solve }: Props) {
+function SettingsPanel({ updateImage, image, updateActiveItem, controlItems, setControlItems, solve, message }: Props) {
     const [mapName, setMapName] = useState('');
     const [activeCourseItem, setActiveCourseItem] = useState<CourseSymbol | undefined>(undefined);
 
     useEffect(() => {
         updateActiveItem(activeCourseItem)
-    }, [activeCourseItem]);
+    }, [activeCourseItem, updateActiveItem]);
 
     const counter = useMemo(() => {
         return controlItems.reduce((acc, item) => {
@@ -90,6 +91,7 @@ function SettingsPanel({ updateImage, image, updateActiveItem, controlItems, set
                 display: 'flex',
                 flexDirection: 'column'
             }}>
+                {message && <Alert severity={message.startsWith('Shortest') ? 'success' : 'error'} sx={{mb: 2}}>{message}</Alert>}
                 { mapName && <Box sx={{
                     mb: 2,
                     display: 'flex',
@@ -183,7 +185,6 @@ function SettingsPanel({ updateImage, image, updateActiveItem, controlItems, set
                             ml: 2
                         }}
                         variant="contained"
-                        component="label"
                         onClick={resetCourse}
                     >
                         Reset
@@ -191,29 +192,12 @@ function SettingsPanel({ updateImage, image, updateActiveItem, controlItems, set
 
                     <Button
                         variant="contained"
-                        component="label"
                         onClick={() => solve()}
                     >
                         Calculate
                     </Button>
                 </Box>
 
-            </Paper>
-            <Paper sx={{
-                minWidth: '100%',
-                m: 1,
-                px: 4,
-                py:4,
-                display: 'flex',
-                flexDirection: 'row-reverse'
-            }}>
-                <Button
-                    variant="contained"
-                    component="label"
-
-                >
-                    Solution
-                </Button>
             </Paper>
         </Box>
         </Box>
